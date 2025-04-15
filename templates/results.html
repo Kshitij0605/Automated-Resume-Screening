@@ -5,90 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Screening Results</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-        }
-        .section {
-            margin-bottom: 20px;
-        }
-        .chart img {
-            max-width: 100%;
-            display: block;
-            margin: 0 auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; text-align: center; }
+        .container { margin: 50px auto; max-width: 800px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        img { max-width: 100%; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Resume Screening Results</h1>
 
+<div class="container">
+    <h1>Resume Screening Results</h1>
 
+    <h2>Keyword Matching Results</h2>
+    <table>
+        <thead>
+            <tr><th>Job Role</th><th>Matched Keywords</th><th>Score (%)</th></tr>
+        </thead>
+        <tbody>
+            {% for role, data in keyword_results.items() %}
+            <tr>
+                <td>{{ role }}</td>
+                <td>{{ data.matched_keywords | join(', ') }}</td>
+                <td>{{ data.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        <div class="section">
-            <h2>Keyword Matching Results</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Job Role</th>
-                        <th>Matched Keywords</th>
-                        <th>Score (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for role, data in keyword_results.items() %}
-                    <tr>
-                        <td>{{ role }}</td>
-                        <td>{{ data.matched_keywords | join(', ') }}</td>
-                        <td>{{ data.score }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <h2>Keyword Matching Visualization</h2>
+    <img src="data:image/png;base64,{{ plot_url }}" alt="Keyword Matching Chart">
 
-        <div class="section chart">
-            <h2>Keyword Matching Visualization</h2>
-            <img src="data:image/png;base64,{{ plot_url }}" alt="Keyword Matching Chart">
-        </div>
+    <h2>BERT-Based Job Role Prediction</h2>
+    <ul>
+        {% for label, score in zip(bert_results['labels'], bert_results['scores']) %}
+        <li>{{ label }}: {{ score | round(2) }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
-        <div class="section">
-            <h2>BERT-Based Job Role Prediction</h2>
-            <ul>
-                {% for label, score in zip(bert_results['labels'], bert_results['scores']) %}
-                <li>{{ label }}: {{ score | round(2) }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
 </body>
 </html>
